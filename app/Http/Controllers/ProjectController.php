@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SaveProjectRequest;
+use App\Http\Requests\UploadProjectsRequest;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
@@ -55,7 +56,7 @@ class ProjectController extends Controller
             $fileModel->url = $request->string('url');
             $fileModel->description = $request->string('description');
             $fileModel->name = time() . '_' . $request->file->getClientOriginalName();
-            $fileModel->file_path =$url.'/storage/' . $filePath;
+            $fileModel->file_path = $url . '/storage/' . $filePath;
             $fileModel->save();
 
             return redirect()->route('projects.index')->with('status', 'El Proyecto fue Creado con Éxito.');
@@ -77,11 +78,34 @@ class ProjectController extends Controller
         ]);
     }
 
-    public function update(Project $project, SaveProjectRequest $request)
+    public function update(Project $project, UploadProjectsRequest $request)
     {
+
         $project->update($request->validated());
 
+
+        $fileModel = new Project();
+
+        if ($request->hasFile('name')) {
+
+
+            $fileModel = $project->fill($request->validated());
+            $url = $request->root();
+            $fileName = $request->file->getClientOriginalName();
+            $filePath = $request->file('name')->storeAs('uploads', $fileName, 'public');
+            $fileModel->title = $request->string('title');
+            $fileModel->url = $request->string('url');
+            $fileModel->description = $request->string('description');
+            $fileModel->name = time() . '_' . $request->file->getClientOriginalName();
+            $fileModel->file_path = $url . '/storage/' . $filePath;
+            $fileModel->save();
+
+            return redirect()->route('projects.index')->with('status', 'El Proyecto fue Creado con Éxito.');
+        } else {
+            $project->update(array_filter($request->validated()));
+        }
         return redirect()->route('projects.show', $project)->with('status', 'El Proyecto fue Actualizado con Éxito.');
+
     }
 
     public function destroy(Project $project)

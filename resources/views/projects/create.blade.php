@@ -19,7 +19,10 @@
                         <div class="container mt-5">
                             <form action="{{ route('projects.store') }}" method="post" enctype="multipart/form-data">
                                 @csrf
-
+                                <div class="custom-file">
+                                    <input type="file" name="file" class="custom-file-input" id="chooseFile">
+                                    <label class="custom-file-label" for="chooseFile"></label>
+                                </div>
                                 @include('projects._form', ['btnText' => 'Guardar'])
                                 @if ($message = Session::get('success'))
                                     <div class="alert alert-success">

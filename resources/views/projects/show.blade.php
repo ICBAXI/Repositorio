@@ -9,7 +9,8 @@
             @method('DELETE')
             <button>Eliminar</button>
         </form>
-        @endauth
-        <p>{{ $project->description }}</p>
-        <p>{{ $project->created_at->diffForHumans() }}</p>
-    @endsection
+    @endauth
+    <a href="{{ $project->file_path }}">link</a>
+    <p>{{ $project->description }}</p>
+    <p>{{ $project->created_at->diffForHumans() }}</p>
+@endsection
